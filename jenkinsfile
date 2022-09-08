@@ -1,0 +1,24 @@
+node {
+def maven_home = tool name: "maven3.8.6"
+properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '2', numToKeepStr: '5')), [$class: 'JobLocalConfiguration', changeReasonComment: ''], pipelineTriggers([pollSCM('* * * * *')])])
+stage('checkoutcode'){
+git branch: 'development', credentialsId: 'a9cc3627-50e0-48e1-8452-5e74adfcf422', url: 'https://github.com/RajSS-insurance/maven-web-application.git'
+}
+
+stage('Buildcode'){
+sh "${maven_home}/bin/mvn clean package"
+}
+
+stage('Runsonarreport'){
+sh "${maven_home}/bin/mvn clean sonar:sonar"
+}
+stage('UploadArtifacts'){
+sh "${maven_home}/bin/mvn clean deploy"
+}
+
+stage('deployappintomcat'){
+sshagent(['ab59f36b-ab8d-479c-9a65-b80bab3ec1a3']) {
+sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@172.31.35.22:/opt/apache-tomcat-9.0.65/webapps"
+}
+}
+}//node closing
