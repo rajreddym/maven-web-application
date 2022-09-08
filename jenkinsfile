@@ -8,7 +8,7 @@ git branch: 'development', credentialsId: 'a9cc3627-50e0-48e1-8452-5e74adfcf422'
 try {
 slacknotification('STARTED')
 stage('Buildcode'){
-sh "${maven_home}/bin/mvn clean package1"
+sh "${maven_home}/bin/mvn clean package"
 }
 
 /*
