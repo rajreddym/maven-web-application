@@ -60,5 +60,5 @@ def slacknotification(String buildStatus = 'STARTED') {
   }
 
   // Send notifications
-  slackSend (color: colorCode, message: summary)
+  slackSend (channel: '#wallmart', color: colorCode, message: summary)
 }
